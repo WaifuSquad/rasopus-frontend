@@ -43,7 +43,7 @@
               }
             }
           },
-          "700": {
+          "460": {
             "description": "A happened",
             "content": {
               "application/json": {
@@ -54,7 +54,7 @@
               }
             }
           },
-          "701": {
+          "461": {
             "description": "B happened",
             "content": {
               "application/json": {
@@ -67,7 +67,7 @@
               }
             }
           },
-          "702": {
+          "462": {
             "description": "C happened",
             "content": {
               "application/json": {
@@ -75,10 +75,10 @@
                   "$ref": "#/components/schemas/MayFailError"
                 },
                 "example": {
-                  "c": [
-                    1,
-                    2
-                  ]
+                  "c": {
+                    "val1": 1,
+                    "val2": 2
+                  }
                 }
               }
             }
@@ -149,11 +149,7 @@
       "MayFailSuccess": {
         "description": "MayFail Success Response",
         "type": "object",
-        "required": [
-          "a",
-          "b",
-          "c"
-        ],
+        "required": ["a", "b", "c"],
         "properties": {
           "a": {
             "type": "integer",
@@ -175,16 +171,12 @@
           {
             "description": "This value occurs on error A",
             "type": "string",
-            "enum": [
-              "a"
-            ]
+            "enum": ["a"]
           },
           {
             "description": "This value occurs on error B",
             "type": "object",
-            "required": [
-              "b"
-            ],
+            "required": ["b"],
             "properties": {
               "b": {
                 "type": "integer",
@@ -196,24 +188,21 @@
           {
             "description": "This value occurs on error C",
             "type": "object",
-            "required": [
-              "c"
-            ],
+            "required": ["c"],
             "properties": {
               "c": {
-                "type": "array",
-                "items": [
-                  {
+                "type": "object",
+                "required": ["val1", "val2"],
+                "properties": {
+                  "val1": {
                     "type": "integer",
                     "format": "int16"
                   },
-                  {
+                  "val2": {
                     "type": "integer",
                     "format": "int32"
                   }
-                ],
-                "maxItems": 2,
-                "minItems": 2
+                }
               }
             },
             "additionalProperties": false
@@ -223,9 +212,7 @@
       "MayNotFindFound": {
         "description": "MayNotFind Found Response",
         "type": "object",
-        "required": [
-          "message"
-        ],
+        "required": ["message"],
         "properties": {
           "message": {
             "type": "string"
@@ -235,11 +222,7 @@
       "TestStruct": {
         "description": "This is how a struct looks like",
         "type": "object",
-        "required": [
-          "anotherNumber",
-          "someNumber",
-          "youGetIt"
-        ],
+        "required": ["anotherNumber", "someNumber", "youGetIt"],
         "properties": {
           "someNumber": {
             "type": "integer",
@@ -261,16 +244,12 @@
           {
             "description": "When there is no data",
             "type": "string",
-            "enum": [
-              "noData"
-            ]
+            "enum": ["noData"]
           },
           {
             "description": "When there is one integer",
             "type": "object",
-            "required": [
-              "oneInteger"
-            ],
+            "required": ["oneInteger"],
             "properties": {
               "oneInteger": {
                 "type": "integer",
@@ -282,9 +261,7 @@
           {
             "description": "When there is one long",
             "type": "object",
-            "required": [
-              "oneLong"
-            ],
+            "required": ["oneLong"],
             "properties": {
               "oneLong": {
                 "type": "integer",
@@ -297,9 +274,7 @@
           {
             "description": "When there is one boolean",
             "type": "object",
-            "required": [
-              "oneBoolean"
-            ],
+            "required": ["oneBoolean"],
             "properties": {
               "oneBoolean": {
                 "type": "boolean"
@@ -310,22 +285,19 @@
           {
             "description": "When there are two strings",
             "type": "object",
-            "required": [
-              "twoStrings"
-            ],
+            "required": ["twoStrings"],
             "properties": {
               "twoStrings": {
-                "type": "array",
-                "items": [
-                  {
+                "type": "object",
+                "required": ["first", "second"],
+                "properties": {
+                  "first": {
                     "type": "string"
                   },
-                  {
+                  "second": {
                     "type": "string"
                   }
-                ],
-                "maxItems": 2,
-                "minItems": 2
+                }
               }
             },
             "additionalProperties": false

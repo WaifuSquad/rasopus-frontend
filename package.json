@@ -11,7 +11,8 @@
     "type-check": "vue-tsc --build",
     "lint:oxlint": "oxlint . --fix -D correctness --ignore-path .gitignore",
     "lint:eslint": "eslint . --fix",
-    "lint": "run-s lint:*"
+    "lint": "run-s lint:*",
+    "oas": "openapi-generator-cli generate -i openapi.json -g typescript-axios -o ./src/api"
   },
   "dependencies": {
     "@kalimahapps/vue-icons": "^1.7.1",

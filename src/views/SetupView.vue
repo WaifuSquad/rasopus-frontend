@@ -14,7 +14,7 @@ import * as z from 'zod'
 import { useForm } from 'vee-validate'
 import { useToast } from '@/components/ui/toast/use-toast'
 import { h } from 'vue'
-
+// import { DefaultApiFp } from '@/api'
 
 import {
   FormControl,
@@ -30,6 +30,9 @@ const formSchema = toTypedSchema(z.object({
   password: z.string().min(3),
 }))
 
+// api call
+// const { indexIndex } = DefaultApiFp()
+// indexIndex();
 
 const { handleSubmit } = useForm({
   validationSchema: formSchema,
