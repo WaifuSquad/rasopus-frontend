@@ -1,0 +1,309 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "rasopus",
+    "description": "The Rasopus URL shortener backend",
+    "contact": {
+      "name": "Repository",
+      "url": "https://github.com/WaifuSquad/Rasopus-Backend"
+    },
+    "version": "0.0.1"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "description": "Returns \"Hello, world!\".",
+        "operationId": "index_index",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/may_fail": {
+      "get": {
+        "description": "Get some data, but it may fail",
+        "operationId": "may_fail_may_fail",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MayFailSuccess"
+                }
+              }
+            }
+          },
+          "460": {
+            "description": "A happened",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MayFailError"
+                },
+                "example": "a"
+              }
+            }
+          },
+          "461": {
+            "description": "B happened",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MayFailError"
+                },
+                "example": {
+                  "b": 1
+                }
+              }
+            }
+          },
+          "462": {
+            "description": "C happened",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MayFailError"
+                },
+                "example": {
+                  "c": {
+                    "val1": 1,
+                    "val2": 2
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/may_not_find": {
+      "get": {
+        "description": "Get a cool struct, but it may not be found",
+        "operationId": "may_not_find_may_not_find",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MayNotFindFound"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/test_struct": {
+      "get": {
+        "description": "This will always return a `TestStruct`. It can't fail.",
+        "operationId": "test_test_struct",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestStruct"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/test_enum": {
+      "get": {
+        "description": "This will always return a `TestEnum`. It can't fail.",
+        "operationId": "test_test_enum",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TestEnum"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "MayFailSuccess": {
+        "description": "MayFail Success Response",
+        "type": "object",
+        "required": ["a", "b", "c"],
+        "properties": {
+          "a": {
+            "type": "integer",
+            "format": "int8"
+          },
+          "b": {
+            "type": "integer",
+            "format": "int16"
+          },
+          "c": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "MayFailError": {
+        "description": "MayFail Error Response",
+        "oneOf": [
+          {
+            "description": "This value occurs on error A",
+            "type": "string",
+            "enum": ["a"]
+          },
+          {
+            "description": "This value occurs on error B",
+            "type": "object",
+            "required": ["b"],
+            "properties": {
+              "b": {
+                "type": "integer",
+                "format": "int8"
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "description": "This value occurs on error C",
+            "type": "object",
+            "required": ["c"],
+            "properties": {
+              "c": {
+                "type": "object",
+                "required": ["val1", "val2"],
+                "properties": {
+                  "val1": {
+                    "type": "integer",
+                    "format": "int16"
+                  },
+                  "val2": {
+                    "type": "integer",
+                    "format": "int32"
+                  }
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      },
+      "MayNotFindFound": {
+        "description": "MayNotFind Found Response",
+        "type": "object",
+        "required": ["message"],
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "TestStruct": {
+        "description": "This is how a struct looks like",
+        "type": "object",
+        "required": ["anotherNumber", "someNumber", "youGetIt"],
+        "properties": {
+          "someNumber": {
+            "type": "integer",
+            "format": "int8"
+          },
+          "anotherNumber": {
+            "type": "integer",
+            "format": "int16"
+          },
+          "youGetIt": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "TestEnum": {
+        "description": "This is how an enum looks like",
+        "oneOf": [
+          {
+            "description": "When there is no data",
+            "type": "string",
+            "enum": ["noData"]
+          },
+          {
+            "description": "When there is one integer",
+            "type": "object",
+            "required": ["oneInteger"],
+            "properties": {
+              "oneInteger": {
+                "type": "integer",
+                "format": "int32"
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "description": "When there is one long",
+            "type": "object",
+            "required": ["oneLong"],
+            "properties": {
+              "oneLong": {
+                "type": "integer",
+                "format": "uint64",
+                "minimum": 0.0
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "description": "When there is one boolean",
+            "type": "object",
+            "required": ["oneBoolean"],
+            "properties": {
+              "oneBoolean": {
+                "type": "boolean"
+              }
+            },
+            "additionalProperties": false
+          },
+          {
+            "description": "When there are two strings",
+            "type": "object",
+            "required": ["twoStrings"],
+            "properties": {
+              "twoStrings": {
+                "type": "object",
+                "required": ["first", "second"],
+                "properties": {
+                  "first": {
+                    "type": "string"
+                  },
+                  "second": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        ]
+      }
+    }
+  }
+}

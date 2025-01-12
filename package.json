@@ -11,9 +11,13 @@
     "type-check": "vue-tsc --build",
     "lint:oxlint": "oxlint . --fix -D correctness --ignore-path .gitignore",
     "lint:eslint": "eslint . --fix",
-    "lint": "run-s lint:*"
+    "lint": "run-s lint:*",
+    "oas": "openapi-generator-cli generate -i openapi.json -g typescript-axios -o ./src/api"
   },
   "dependencies": {
+    "@kalimahapps/vue-icons": "^1.7.1",
+    "@vee-validate/zod": "^4.15.0",
+    "@vueuse/core": "^12.4.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.469.0",
@@ -21,10 +25,13 @@
     "radix-vue": "^1.9.12",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
+    "vee-validate": "^4.15.0",
     "vue": "^3.5.13",
-    "vue-router": "^4.5.0"
+    "vue-router": "^4.5.0",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@openapitools/openapi-generator-cli": "^2.15.3",
     "@tsconfig/node22": "^22.0.0",
     "@types/node": "^22.10.5",
     "@vitejs/plugin-vue": "^5.2.1",
