@@ -1,0 +1,80 @@
+name: Publish Release
+
+on:
+  push:
+    branches:
+      - release/**
+  release:
+    types:
+      - created
+
+jobs:
+  check_version_bump:
+    name: Check Version Bump
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '23'
+
+      - name: Read source branch version
+        id: source_version
+        run: echo "version=$(node -p \"require('./package.json').version\")" >> $GITHUB_OUTPUT
+
+      - name: Get latest release version
+        id: latest_release
+        run: echo "version=$(curl -s https://api.github.com/repos/${GITHUB_REPOSITORY}/releases/latest | jq -r .tag_name)" >> $GITHUB_OUTPUT
+
+      - name: Parse and compare versions
+        run: |
+          source_version="${{ steps.source_version.outputs.version }}"
+          latest_release_version="${{ steps.latest_release.outputs.version }}"
+          if [ "$(printf '%s\n' "$latest_release_version" "$source_version" | sort -V | head -n1)" != "$source_version" ]; then
+            echo "Source branch version ($source_version) is higher than the latest release version ($latest_release_version)."
+          else
+            echo "Source branch version ($source_version) is not higher than the latest release version ($latest_release_version)."
+            exit 1
+
+  create_release:
+    name: Create GitHub Release
+    needs: check_version_bump
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '23'
+
+      - name: Create release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "${{ steps.source_version.outputs.version }}" --repo="$GITHUB_REPOSITORY" --title="Release ${{ steps.source_version.outputs.version }}" --generate-notes --latest
+
+  publish_docker:
+    name: Publish Docker Image
+    needs: create_release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/rasopus-frontend:${{ steps.source_version.outputs.version }} .
+          docker push ${{ secrets.DOCKER_USERNAME }}/rasopus-frontend:${{ steps.source_version.outputs.version }}
