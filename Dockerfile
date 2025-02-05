@@ -1,4 +1,5 @@
-FROM node:23
+# Build the application
+FROM node:23 AS build
 
 WORKDIR /app
 
@@ -8,6 +9,13 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 5173
+RUN npm run build
 
-CMD ["npm", "run", "dev", "--", "--host"]
+# Serve the application
+FROM nginx:alpine
+
+COPY --from=build /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
